@@ -56,13 +56,15 @@ h1 em{font-style:normal;background:var(--rd);color:var(--ink);padding:0 .05em;di
 .rd.wait b{animation:pulse 1.4s ease-in-out infinite}.rd.wait b:nth-child(2){animation-delay:.15s}.rd.wait b:nth-child(3){animation-delay:.3s}
 @keyframes pulse{0%,100%{opacity:.35}50%{opacity:.75}}
 .rd button{pointer-events:auto;position:relative;z-index:2;font-size:11px;letter-spacing:.1em;border:2px solid var(--rd);padding:3px 8px;margin-top:2px;align-self:flex-start;color:var(--rd)}.rd button:hover{background:var(--rd);color:var(--pp)}
-.no{position:absolute;left:0;bottom:0;background:var(--ink);color:var(--pp);font-size:11px;padding:1px 6px;z-index:3}
-.src{position:absolute;right:0;bottom:0;background:var(--ink);color:var(--hl);font-size:9px;letter-spacing:.08em;padding:1px 6px;z-index:3;opacity:.85}
+.no{position:absolute;left:0;bottom:0;max-width:56%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--ink);color:var(--pp);font-size:11px;padding:1px 6px;z-index:3}
+.src{position:absolute;right:0;bottom:0;max-width:62%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--ink);color:var(--hl);font-size:9px;letter-spacing:.08em;padding:1px 6px;z-index:3;opacity:.85}
+.src button{all:unset;cursor:pointer;margin-left:4px;pointer-events:auto;position:relative;z-index:4}.src button:hover{color:var(--rd)}
 .bx{position:absolute;right:6px;top:6px;z-index:5;background:var(--pp);border:2px solid var(--ink);font:800 15px/1 var(--d);width:34px;height:26px;letter-spacing:.05em;transition:.15s}.bx:hover,.bx:focus-visible{background:var(--hl);rotate:-6deg;scale:1.15}
 .stamp{position:absolute;left:50%;top:46%;translate:-50% -50%;rotate:var(--sr);font:900 clamp(30px,3.6vw,42px)/1 var(--d);letter-spacing:.07em;color:var(--rd);border:4px solid var(--rd);padding:2px 12px;mix-blend-mode:multiply;filter:url(#ink);z-index:4;pointer-events:none;white-space:nowrap;opacity:.9}
 .s-drop .stamp{color:var(--ink);border-color:var(--ink)}.slam{animation:sl .38s cubic-bezier(.2,2,.4,1)}@keyframes sl{from{scale:3.4;opacity:0}}
 .in{padding:10px 13px 0}.in h3{display:inline;margin:0;font:800 28px/.98 var(--d);text-transform:uppercase;letter-spacing:-.005em}
 .fv h3{background:linear-gradient(transparent 58%,var(--hl) 58% 92%,transparent 92%);-webkit-box-decoration-break:clone;box-decoration-break:clone}.s-drop h3{text-decoration:line-through 5px var(--ink)}
+.s-done.fv h3,.s-drop.fv h3{background:linear-gradient(transparent 58%,var(--hl) 58% 92%,transparent 92%);opacity:.5}
 .ty{font-size:12px;color:#4d4433;margin-top:7px;display:flex;justify-content:space-between;gap:6px}
 .rl{height:11px;margin-top:8px;border-top:2px solid var(--ink);background:repeating-linear-gradient(90deg,var(--ink) 0 1px,transparent 1px 5px);width:var(--w)}
 .mk{display:flex;gap:8px;align-items:center;margin-top:8px;font-size:12px;flex-wrap:wrap}.mc{border:3px solid var(--rd);border-radius:48% 52% 46% 54%/55% 45% 55% 45%;color:var(--rd);font:900 17px/1 var(--d);padding:4px 7px;rotate:-7deg}.mk s{text-decoration:none;color:#b58900;letter-spacing:2px}
@@ -89,6 +91,7 @@ textarea{width:100%;min-height:96px;background:repeating-linear-gradient(transpa
 .prov{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:4px 0;gap:10px}
 .dot{width:9px;height:9px;border-radius:50%;flex:none;display:inline-block;margin-right:6px}
 .dot.ok{background:var(--gn)}.dot.off{background:#999}.dot.err{background:var(--rd)}
+.pwtoggle{font-size:11px;white-space:nowrap;border:1px solid var(--ink);padding:2px 6px;flex:none}.pwtoggle:hover{background:var(--ink);color:var(--pp)}
 .toast{position:fixed;bottom:70px;left:50%;translate:-50% 0;background:var(--ink);color:var(--hl);padding:8px 18px;font-size:13px;z-index:60;box-shadow:4px 4px 0 #0008;animation:ti .25s}
 @keyframes ti{from{opacity:0;translate:-50% 20px}}
 .liveregion{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
@@ -102,7 +105,7 @@ textarea{width:100%;min-height:96px;background:repeating-linear-gradient(transpa
 </div></div>
 <div class="ctl"><span>FIND&gt; <span id="qwrap"><input id="q" placeholder="type here_" autocomplete="off" aria-label="Search games"><button id="qclr" aria-label="Clear search" hidden>✕</button></span></span>
  <button id="nlt" aria-pressed="false" title="Ask in plain English instead (needs AI key)">✦ ASK</button>
- <button data-c="st">STATUS <u></u></button><button data-c="len">LENGTH <u></u></button><button data-c="dec">ERA <u></u></button><button data-c="sort">SORT <u></u></button><button data-c="group">GROUPS <u></u></button>
+ <button data-c="st" title="Click to cycle, Shift+Click to go back">STATUS <u></u></button><button data-c="len" title="Click to cycle, Shift+Click to go back">LENGTH <u></u></button><button data-c="dec" title="Click to cycle, Shift+Click to go back">ERA <u></u></button><button data-c="sort" title="Click to cycle, Shift+Click to go back">SORT <u></u></button><button data-c="group" title="Click to cycle, Shift+Click to go back">GROUPS <u></u></button>
  <span class="rescount" id="rescount" aria-live="polite"></span>
  <span style="flex:1"></span><button class="go" id="rnd">▶ PULL A CARD</button><button class="go" id="smart" title="AI-ranked pick (needs AI key)">✦ SMART PICK</button><button id="set" aria-haspopup="dialog">[DESK]</button></div>
 <div class="w"><main id="out" aria-live="polite" aria-busy="false"></main></div>
@@ -126,11 +129,18 @@ const fmt=h=>{if(h==null)return'—';const m=Math.round(h*60),a=Math.floor(m/60)
 let qDeb;
 function announce(msg){const l=$('#live');l.textContent='';requestAnimationFrame(()=>l.textContent=msg)}
 function toast(msg){document.querySelectorAll('.toast').forEach(t=>t.remove());const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.append(t);setTimeout(()=>t.remove(),3200)}
+function toastUndo(msg,onUndo){document.querySelectorAll('.toast').forEach(t=>t.remove());const t=document.createElement('div');t.className='toast';
+ t.innerHTML=`${esc(msg)} <button type="button" style="margin-left:10px;text-decoration:underline;color:var(--rd)">[UNDO]</button>`;document.body.append(t);
+ const to=setTimeout(()=>t.remove(),8000);t.querySelector('button').onclick=()=>{clearTimeout(to);t.remove();onUndo()}}
+let shredArmed=false,shredTimer;
 function thunk(){if(!SND)return;try{AC??=new AudioContext();const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(36,t+.16);g.gain.setValueAtTime(.55,t);g.gain.exponentialRampToValueAtTime(.001,t+.22);o.connect(g).connect(AC.destination);o.start();o.stop(t+.22)}catch{}}
-function parse(t){let g='',o=[],seen=new Map();for(let l of t.replace(/\r/g,'').split('\n')){l=l.trim();if(!l||l==='GAMES')continue;const m=l.match(/^- \[( |x)\] (.+?)(?: \((\d{4})\))?(?: - \[(.*?)\])?$/i);
+function parse(t){let g='',o=[],seen=new Map(),warnings=[];for(let l of t.replace(/\r/g,'').split('\n')){l=l.trim();if(!l||l==='GAMES')continue;const m=l.match(/^- \[( |x)\] (.+?)(?: \((\d{4})\))?(?: - \[(.*?)\])?$/i);
  if(m){let h=null;if(m[4]&&/\d/.test(m[4])){const x=m[4].match(/(?:(\d+)\s*hrs?)?\s*(?:(\d+)\s*min)?/);h=(+x[1]||0)+(+x[2]||0)/60}
   let name=m[2].trim(),year=m[3]?+m[3]:null,key=name+'|'+(year||''),n=seen.get(key)||0;seen.set(key,n+1);if(n)key+='#'+n;
-  o.push({id:o.length,n:name,y:year,h,t:m[4]||'N/A',g:g||'UNSORTED',d:m[1].toLowerCase()==='x',k:key})}else g=l}return o}
+  o.push({id:o.length,n:name,y:year,h,t:m[4]||'N/A',g:g||'UNSORTED',d:m[1].toLowerCase()==='x',k:key})}
+ else if(/^-\s*\[/.test(l))warnings.push(l);
+ else g=l}
+ return{games:o,warnings}}
 const score=g=>(S[g.k]?.r||0)*20||RAW[g.k]?.mc||Math.round((RAW[g.k]?.rt||0)*20);
 const C={genre:()=>0,name:(a,b)=>a.n.localeCompare(b.n),new:(a,b)=>(b.y||0)-(a.y||0),old:(a,b)=>(a.y||9999)-(b.y||9999),short:(a,b)=>(a.h??1e9)-(b.h??1e9),long:(a,b)=>(b.h??-1)-(a.h??-1),rate:(a,b)=>score(b)-score(a)};
 function view(){const aiMode=F.q==='\u0000AI\u0000',q=aiMode?'':F.q.toLowerCase().trim(),s=O.st[F.st][0],l=O.len[F.len][0],d=O.dec[F.dec][0],[lo,hi]=l==='any'?[0,0]:l.split('-').map(Number);
@@ -140,7 +150,7 @@ function view(){const aiMode=F.q==='\u0000AI\u0000',q=aiMode?'':F.q.toLowerCase(
  else res.sort(C[O.sort[F.sort][0]]);
  return res}
 function artH(g){const s=ART[g.k],r=RAW[g.k],src=r?.img||s?.img,label=s?.src||r?.src,failed=g._failed,i=g.id;
- if(src)return`<img loading="lazy" alt="" referrerpolicy="no-referrer" class="ld" src="${esc(src)}" onerror="this.closest('.art').classList.remove('has-img');this.remove()">${label?`<span class="src">${esc(label)}</span>`:''}`;
+ if(src)return`<img loading="lazy" alt="" referrerpolicy="no-referrer" class="ld" src="${esc(src)}" onerror="this.closest('.art').classList.remove('has-img');this.remove()">${label?`<span class="src">${esc(label)}<button type="button" data-retry="${i}" aria-label="Refetch art" title="Refetch art">↻</button></span>`:''}`;
  const waiting=g.q===1&&!failed;
  return`<div class="rd${waiting?' wait':''}"><b style="width:${60+rnd(i,5)*36}%"></b><b style="width:${35+rnd(i,6)*45}%"></b><b style="width:${55+rnd(i,7)*40}%"></b><span>${waiting?'SEARCHING THE ARCHIVE…':'NO ART ON FILE'}</span>${failed?'<button type="button" data-retry="'+i+'">[RETRY]</button>':''}</div>`}
 function card(g,n){const s=st(g),u=S[g.k]||{},r=RAW[g.k]||{},i=g.id,ah=g.h==null?150:Math.round(100+Math.min(g.h,90)*3),hasImg=!!(r.img||ART[g.k]?.img),
@@ -156,6 +166,7 @@ function render(anim){const L=view(),grp=O.group[F.group][0];let h='',n=0;
  const o=$('#out');o.className=anim?'anim':'';o.innerHTML=L.length?h:`<div class="empty">NO FILES MATCH. THE CLERK SHRUGS.<br><br>${F.q||F.g.size||F.st?'<button type="button" id="clrAll">[CLEAR FILTERS]</button>':'<button type="button" id="pickFile">[CHOOSE games.md]</button>'}</div>`;
  document.querySelectorAll('.c[data-i]').forEach(c=>io.observe(c));SLAM=-1;ledger(L);lab();
  $('#rescount').textContent=L.length!==G.length?`${L.length} / ${G.length}`:'';
+ $('#rescount').title=L.length!==G.length?`${L.length} games match your filters out of ${G.length} total`:'';
  $('#clrAll')?.addEventListener('click',clearFilters);$('#pickFile')?.addEventListener('click',()=>$('#file').click())}
 function clearFilters(){F.q='';F.g.clear();F.st=0;F.len=0;F.dec=0;AI_KEYSET=new Set();$('#q').value='';rail();render(1)}
 function lab(){document.querySelectorAll('[data-c]').forEach(b=>{const k=b.dataset.c;b.querySelector('u').textContent=O[k][F[k]][1];b.classList.toggle('active',F[k]!==0)})}
@@ -166,15 +177,21 @@ function ledger(L){const u=[...new Map(G.map(g=>[g.k,g])).values()],c={todo:0,pl
  $('#lg').innerHTML=`<h4>LEDGER OF UNFINISHED BUSINESS</h4><div class="ln">FILES ON RECORD<b>${u.length}</b></div><div class="ln">CLOSED<span class="ta">${tally}</span><b>${c.done}</b></div><div class="ln">IN PLAY<b>${c.play}</b></div><div class="ln">HOURS SERVED<b>${Math.round(hb).toLocaleString()}</b></div><div class="ln">HOURS OWED<b>${Math.round(hl).toLocaleString()}</b></div><div class="pc">${Math.round(c.done/u.length*100)}%<span>OF THE PILE CLEARED.<br>AT 10H/WEEK: ${Math.ceil(hl/10)} WEEKS TO ZERO. SHOWING ${L.length}.</span></div>`}
 function rail(){const m=new Map();G.forEach(g=>m.set(g.g,(m.get(g.g)||0)+1));let i=0;
  $('#rail').innerHTML=(F.g.size?'<button type="button" class="tab all" data-clr style="--i:0;--ph:44px">✕ ALL</button>':'')+[...m].map(([k,n])=>`<button type="button" class="tab${F.g.has(k)?' on':''}" data-g="${esc(k)}" aria-pressed="${F.g.has(k)}" style="--i:${i};--ph:${34+(i++*7%4)*5}px">${esc(k.toUpperCase())}<sup>${n}</sup></button>`).join('');
- O.dec=[['any','ANY'],...[...new Set(G.filter(g=>g.y).map(g=>Math.floor(g.y/10)*10))].sort().map(d=>[d,d+'s'])]}
+ const newDec=[['any','ANY'],...[...new Set(G.filter(g=>g.y).map(g=>Math.floor(g.y/10)*10))].sort().map(d=>[d,d+'s'])];
+ if(newDec.length!==O.dec.length)F.dec=0;
+ O.dec=newDec}
 
 /* ---------- ART PROVIDERS ---------- */
 /* Each provider resolves {img,src,ex?,t?} or null. Providers run in priority order;
    first usable image wins, but metadata (extract/platforms/ratings) merges from whichever provider has it. */
 const norm=s=>s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
-function titleSim(a,b){a=norm(a);b=norm(b);if(!a||!b)return 0;if(a===b)return 1;
- const aw=a.split(' '),bw=new Set(b.split(' '));let hit=0;aw.forEach(w=>{if(bw.has(w))hit++});
- const cov=hit/aw.length;return b.startsWith(a)||a.startsWith(b)?Math.max(cov,.75):cov}
+const EDITIONS=['definitive edition','game of the year edition','directors cut','enhanced edition','remastered','remaster','remake','redux','goty'];
+function splitEdition(s){s=norm(s);for(const e of EDITIONS){const en=norm(e);if(s===en||s.endsWith(' '+en))return{base:s.slice(0,s.length-en.length).trim()||s,ed:en}}return{base:s,ed:null}}
+function titleSim(a,b){const A=splitEdition(a),B=splitEdition(b);a=A.base;b=B.base;if(!a||!b)return 0;
+ let score;if(a===b)score=1;
+ else{const aw=a.split(' '),bw=new Set(b.split(' '));let hit=0;aw.forEach(w=>{if(bw.has(w))hit++});
+  const cov=hit/aw.length;score=b.startsWith(a)||a.startsWith(b)?Math.max(cov,.75):cov}
+ return A.ed===B.ed?score:score*.3}
 
 async function fetchJSON(url,opts){const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),9000);
  try{const r=await fetch(url,{...opts,signal:ctl.signal});if(!r.ok)throw new Error('HTTP '+r.status);return await r.json()}finally{clearTimeout(tm)}}
@@ -222,19 +239,18 @@ const enqueue=g=>{if(!g||g.q===1)return;if(ART[g.k]&&!g._retry)return;g.q=1;g._f
 async function pump(){while(run<4&&Q.length){run++;const g=Q.shift();job(g).finally(()=>{run--;pump()})}}
 
 async function job(g){
+ const active=PROVIDERS.filter(([name])=>!(name==='sgdb'&&!SGDB_KEY)&&!(name==='rawg'&&!RAWG_KEY));
+ const settled=await Promise.allSettled(active.map(([,fn])=>fn(g)));
  let picked=null,meta={};
- for(const[name,fn]of PROVIDERS){
-  if(name==='sgdb'&&!SGDB_KEY)continue;if(name==='rawg'&&!RAWG_KEY)continue;
-  try{
-   const res=await fn(g);
-   if(res){
-    PROV_STATE[name]='ok';
-    if(res.ex)meta.ex=meta.ex||res.ex;if(res.t)meta.t=meta.t||res.t;
-    if(res.mc!=null)meta.mc=res.mc;if(res.rt!=null)meta.rt=res.rt;if(res.pl)meta.pl=res.pl;
-    if(!picked&&res.img&&isHttpUrl(res.img)){picked={img:res.img,src:res.src}}
-   }
-  }catch(err){PROV_STATE[name]='err';console.warn('[backlog] provider',name,'failed for',g.n,err.message)}
- }
+ active.forEach(([name],idx)=>{
+  const r=settled[idx];
+  if(r.status==='rejected'){PROV_STATE[name]='err';console.warn('[backlog] provider',name,'failed for',g.n,r.reason?.message);return}
+  const res=r.value;if(!res)return;
+  PROV_STATE[name]='ok';
+  if(res.ex)meta.ex=meta.ex||res.ex;if(res.t)meta.t=meta.t||res.t;
+  if(res.mc!=null)meta.mc=res.mc;if(res.rt!=null)meta.rt=res.rt;if(res.pl)meta.pl=res.pl;
+  if(!picked&&res.img&&isHttpUrl(res.img))picked={img:res.img,src:res.src}
+ });
  if(picked)ART[g.k]={...picked,...meta};
  else if(Object.keys(meta).length)ART[g.k]={...(ART[g.k]||{}),...meta};
  if(meta.mc!=null||meta.rt!=null||meta.pl){RAW[g.k]={...(RAW[g.k]||{}),mc:meta.mc??RAW[g.k]?.mc,rt:meta.rt??RAW[g.k]?.rt,pl:meta.pl??RAW[g.k]?.pl}}
@@ -250,27 +266,67 @@ function refreshCardArt(g){
   a.innerHTML=artH(g);keep.forEach(e=>a.append(e))});
  if($('#m').open&&$('#m').dataset.gk===g.k)openModalArtRefresh(g)}
 function openModalArtRefresh(g){const a=$('#m').querySelector('.art');if(!a)return;const keep=[...a.children].filter(e=>e.classList.contains('stamp'));a.innerHTML=artH(g);keep.forEach(e=>a.append(e))}
+/* 'disabled' (key cleared) falls into the 'off' gray bucket below — correct by construction, no separate reset needed. */
 function updateProvDots(){document.querySelectorAll('[data-dot]').forEach(d=>{const p=d.dataset.dot,s=PROV_STATE[p];d.className='dot '+(s==='ok'?'ok':s==='err'?'err':'off')})}
 addEventListener('pagehide',()=>{SV('ba_art',ART);SV('ba_rawg',RAW)});
 
+/* ---------- session timer (§3.2) — in-memory only; lost on tab close by design ---------- */
+let SESSION=null,sessionIv=null,SESSION_PENDING=null;
+function sessionRowHTML(id){
+ if(SESSION&&SESSION.gi===id){const el=Date.now()-SESSION.start,m=Math.floor(el/60000),sec=Math.floor(el/1000)%60;
+  return`<span>SESSION:</span><b id="sessiontime">${m}:${String(sec).padStart(2,'0')}</b><button type="button" data-action="end" data-id="${id}">[■ END SESSION]</button>`}
+ if(SESSION_PENDING&&SESSION_PENDING.gi===id)
+  return`<span>Add ${fmt(SESSION_PENDING.hrs)} to hours played?</span><button type="button" data-sessionconfirm="add" data-id="${id}">[ADD]</button><button type="button" data-sessionconfirm="discard" data-id="${id}">[DISCARD]</button>`;
+ return`<button type="button" data-action="start" data-id="${id}">[▶ START SESSION]</button>`}
+function startSessionTick(){clearInterval(sessionIv);sessionIv=setInterval(()=>{const el=$('#sessiontime');if(!el||!SESSION){clearInterval(sessionIv);return}
+ const ms=Date.now()-SESSION.start,m=Math.floor(ms/60000),sec=Math.floor(ms/1000)%60;el.textContent=`${m}:${String(sec).padStart(2,'0')}`},1000)}
+
 /* ---------- actions ---------- */
 let lastFocus=null;
-function setSt(g,s){(S[g.k]??={}).s=s;save();SLAM=g.id;announce(`${g.n} marked ${LBL[s]}`);if(s==='done'||s==='drop'){thunk();const o=$('#out');o.classList.add('sk');setTimeout(()=>o.classList.remove('sk'),200)}render()}
+function setSt(g,s){const u=S[g.k]??={};u.s=s;u.ts=Date.now();save();SLAM=g.id;announce(`${g.n} marked ${LBL[s]}`);if(s==='done'||s==='drop'){thunk();const o=$('#out');o.classList.add('sk');setTimeout(()=>o.classList.remove('sk'),200)}render()}
 const cyc=g=>setSt(g,ORD[(ORD.indexOf(st(g))+1)%4]);
-function closeDialog(d){const wasOpen=d.open;d.close();if(wasOpen&&lastFocus&&document.contains(lastFocus))lastFocus.focus()}
+function closeDialog(d){if(d.id==='m')noteFlush?.();const wasOpen=d.open;d.close();if(wasOpen&&lastFocus&&document.contains(lastFocus))lastFocus.focus()}
 function open(id){const g=G[id];if(!g)return;lastFocus=document.activeElement;const s=st(g),a=ART[g.k]||{},r=RAW[g.k]||{},u=S[g.k]||{},q=encodeURIComponent(g.n);enqueue(g);
- const m=$('#m');m.dataset.gk=g.k;
+ const m=$('#m');m.dataset.gk=g.k;delete m.dataset.speedrun;
  m.innerHTML=`<div class="ft">FILE №${String(id+1).padStart(3,'0')} · ${esc(g.g.toUpperCase())}</div><div class="fd"><button type="button" class="x" id="mclose">[CLOSE ✕]</button>
  <div><div class="art big">${artH(g)}${s==='done'||s==='drop'?`<div class="stamp" style="--sr:-12deg">${s==='done'?'CLOSED':'ABANDONED'}</div>`:''}</div></div>
- <div><h3>${esc(g.n)}</h3><div class="fl"><div><span>YEAR</span><b>${g.y||'N/D'}</b></div><div><span>TIME TO CLOSE</span><b>${fmt(g.h)}</b></div><div><span>METACRITIC</span><b>${r.mc||'—'}</b></div><div><span>CROWD /5</span><b>${r.rt?r.rt.toFixed(2):'—'}</b></div></div>
+ <div><h3>${esc(g.n)}</h3><div class="fl"><div><span>YEAR</span><b>${g.y||'N/D'}</b></div><div><span>TIME TO CLOSE</span><b>${fmt(g.h)}</b></div><div><span>METACRITIC</span><b>${r.mc||'—'}</b></div><div><span>CROWD /5</span><b>${r.rt?r.rt.toFixed(2):'—'}</b></div><div><span>PLAYED</span><b>${fmt(u.played||0)}${g.h!=null?` / ~${fmt(g.h)}`:''}</b></div></div>
  <p>${esc(a.ex||'NO SUMMARY ON FILE.')}</p>${r.pl?.length?`<div style="font-size:12px;opacity:.75">${esc(r.pl.slice(0,7).join(' / '))}</div>`:''}
- <div class="ch"><span>STATUS:</span>${ORD.map(o=>`<button type="button" class="${o===s?'on':''}" data-s="${o}" data-id="${id}" aria-pressed="${o===s}">${LBL[o]}</button>`).join('')}</div>
- <div class="ch"><span>GRADE:</span>${[1,2,3,4,5].map(n=>`<button type="button" class="n${(u.r||0)===n?' on':''}" data-r="${n}" data-id="${id}" aria-label="Grade ${n}">${n}</button>`).join('')}<button type="button" data-fav="1" data-id="${id}" class="${u.f?'on':''}" aria-pressed="${!!u.f}">${u.f?'[♥ MARKED]':'[♡ MARK]'}</button></div>
- <div class="ch" id="tagrow"><span>TAGS:</span>${(TAGS[g.k]||[]).map(t=>`<button type="button" class="tagpill" data-tagjump="${esc(t)}" title="Search for this tag">${esc(t)}</button>`).join('')}<button type="button" id="autotag" data-id="${id}">${TAGS[g.k]?'[✦ RE-TAG]':'[✦ AUTO-TAG]'}</button></div>
+ <div class="ch" id="sessionrow">${sessionRowHTML(id)}</div>
+ <div class="ch" role="radiogroup" aria-label="Status"><span>STATUS:</span>${ORD.map(o=>`<button type="button" role="radio" aria-checked="${o===s}" class="${o===s?'on':''}" data-s="${o}" data-id="${id}">${LBL[o]}</button>`).join('')}</div>
+ <div class="ch"><span>GRADE:</span><span role="radiogroup" aria-label="Grade" style="display:contents">${[1,2,3,4,5].map(n=>`<button type="button" role="radio" aria-checked="${(u.r||0)===n}" class="n${(u.r||0)===n?' on':''}" data-r="${n}" data-id="${id}" aria-label="Grade ${n}">${n}</button>`).join('')}</span><button type="button" data-fav="1" data-id="${id}" class="${u.f?'on':''}" aria-pressed="${!!u.f}">${u.f?'[♥ MARKED]':'[♡ MARK]'}</button></div>
+ <div class="ch" id="tagrow"><span>TAGS:</span>${(TAGS[g.k]||[]).map(t=>`<button type="button" class="tagpill" data-tagjump="${esc(t)}" title="Search for this tag">${esc(t)}</button>`).join('')}<button type="button" id="autotag" data-id="${id}">${TAGS[g.k]?.length?'[✦ RE-TAG]':'[✦ AUTO-TAG]'}</button></div>
  <label class="sr" for="note">Clerk's notes</label><textarea id="note" data-id="${id}" placeholder="Clerk's notes — platform, save slot, why it's next…">${esc(u.n||'')}</textarea>
  <div class="lk"><a target="_blank" rel="noopener noreferrer" href="https://howlongtobeat.com/?q=${q}">→HowLongToBeat</a><a target="_blank" rel="noopener noreferrer" href="https://opencritic.com/search?criteria=${q}">→OpenCritic</a><a target="_blank" rel="noopener noreferrer" href="https://www.metacritic.com/search/${q}/?category=13">→Metacritic</a><a target="_blank" rel="noopener noreferrer" href="https://store.steampowered.com/search/?term=${q}">→Steam</a><a target="_blank" rel="noopener noreferrer" href="https://www.pcgamingwiki.com/w/index.php?search=${q}">→PCGamingWiki</a><a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/results?search_query=${q}+${g.y||''}+trailer">→Trailer</a>${a.t?`<a target="_blank" rel="noopener noreferrer" href="https://en.wikipedia.org/wiki/${encodeURIComponent(a.t.replace(/ /g,'_'))}">→Wikipedia</a>`:''}</div></div></div>`;
  m.showModal();m.querySelector('#mclose').focus()}
-function pick(){const pool=view().filter(g=>['todo','play'].includes(st(g)));lastFocus=document.activeElement;const d=$('#m');delete d.dataset.gk;
+function triageUI(){
+ if(!aiReady()){toast('Set an AI key in [DESK] first');return}
+ lastFocus=document.activeElement;const d=$('#m');delete d.dataset.gk;delete d.dataset.speedrun;
+ d.innerHTML=`<div class="pk" style="text-align:left"><button type="button" class="x" id="mclose">[CLOSE ✕]</button><h3 style="font-size:34px">Triaging the backlog…</h3><div id="triagebody">THE CLERK IS REVIEWING OPEN FILES…</div></div>`;
+ d.showModal();d.querySelector('#mclose').onclick=()=>closeDialog(d);
+ aiTriageBacklog().then(({items,truncated})=>{
+  if(!d.open)return;
+  if(!items.length){$('#triagebody').textContent='NOTHING FLAGGED. THE PILE LOOKS INTENTIONAL.';return}
+  $('#triagebody').innerHTML=(truncated?'<p style="font-size:12px;opacity:.8">Only the first 150 open files were reviewed.</p>':'')+
+   items.map(it=>`<div class="ch" style="justify-content:space-between" data-triage-row="${it.g.id}"><span>${esc(it.g.n)} — <i style="opacity:.75">${esc(it.reason)}</i></span><span><button type="button" data-triageconfirm="${it.g.id}">[ABANDON]</button><button type="button" data-triagedismiss="${it.g.id}">[KEEP]</button></span></div>`).join('')
+ }).catch(err=>{if(!d.open)return;$('#triagebody').textContent='Triage failed: '+(err.message||'unknown error')})}
+let TRIAGE_POOL=null,TRIAGE_IDX=0;
+function speedRunUI(){
+ TRIAGE_POOL=view();TRIAGE_IDX=0;
+ if(!TRIAGE_POOL.length){toast('Nothing to triage — filters ate the backlog');return}
+ lastFocus=document.activeElement;const d=$('#m');delete d.dataset.gk;d.dataset.speedrun='1';
+ renderSpeedRunCard();d.showModal()}
+function renderSpeedRunCard(){const d=$('#m'),g=TRIAGE_POOL[TRIAGE_IDX];
+ if(!g){d.innerHTML='<div class="pk"><button type="button" class="x" id="mclose">[CLOSE ✕]</button><h3>Done.</h3><div>END OF THE STACK.</div></div>';d.querySelector('#mclose').onclick=()=>closeDialog(d);return}
+ const s=st(g);
+ d.innerHTML=`<div class="pk" style="text-align:left"><button type="button" class="x" id="mclose">[CLOSE ✕]</button>
+ <div style="font-size:12px;opacity:.7">SPEED TRIAGE · ${TRIAGE_IDX+1}/${TRIAGE_POOL.length}</div>
+ <h3 style="font-size:46px">${esc(g.n)}</h3><div style="opacity:.8">${esc(g.g.toUpperCase())} · ${g.y||'N/D'} · ${fmt(g.h)}</div>
+ <div class="ch" style="margin-top:16px;font-size:15px"><b>1</b>=OPEN &nbsp; <b>2</b>=ACTIVE &nbsp; <b>3</b>=CLOSED &nbsp; <b>4</b>=ABANDONED &nbsp; <b>→</b>=SKIP &nbsp; <b>ESC</b>=EXIT</div>
+ <div style="margin-top:8px;font-size:13px;opacity:.75">Currently: ${LBL[s]}</div></div>`;
+ d.querySelector('#mclose').onclick=()=>closeDialog(d)}
+function speedRunAdvance(){TRIAGE_IDX++;renderSpeedRunCard()}
+function pick(){const pool=view().filter(g=>['todo','play'].includes(st(g)));lastFocus=document.activeElement;const d=$('#m');delete d.dataset.gk;delete d.dataset.speedrun;
  if(!pool.length){d.innerHTML='<div class="pk"><button type="button" class="x" id="mclose">[CLOSE ✕]</button><h3>Nothing left.</h3><div>THE FILTERS ATE THE BACKLOG.</div></div>';d.showModal();d.querySelector('#mclose').focus();d.querySelector('#mclose').onclick=()=>closeDialog(d);return}
  d.innerHTML=`<div class="pk"><button type="button" class="x" id="mclose">[CLOSE ✕]</button><div id="ps">THE CLERK IS PULLING A FILE…</div><h3 id="pt">…</h3><div id="pb"></div></div>`;d.showModal();d.querySelector('#mclose').onclick=()=>closeDialog(d);let n=0;
  const iv=setInterval(()=>{if(!d.open){clearInterval(iv);return}$('#pt').textContent=pool[Math.random()*pool.length|0].n;if(++n>20){clearInterval(iv);const g=pool[Math.random()*pool.length|0];enqueue(g);thunk();
@@ -278,7 +334,7 @@ function pick(){const pool=view().filter(g=>['todo','play'].includes(st(g)));las
   $('#pb').innerHTML=`<div class="stamp st slam">ASSIGNED</div><div class="ch" style="justify-content:center;font-size:16px"><button type="button" data-play="${g.id}" class="on">[▶ START]</button><button type="button" data-more="${g.id}">[FILE]</button><button type="button" id="again">[REROLL]</button></div>`}},65)}
 async function smartPick(){
  if(!aiReady()){toast('Set an AI key in [DESK] first');cfg();return}
- const pool=view().filter(g=>['todo','play'].includes(st(g)));lastFocus=document.activeElement;const d=$('#m');delete d.dataset.gk;
+ const pool=view().filter(g=>['todo','play'].includes(st(g)));lastFocus=document.activeElement;const d=$('#m');delete d.dataset.gk;delete d.dataset.speedrun;
  if(!pool.length){d.innerHTML='<div class="pk"><button type="button" class="x" id="mclose">[CLOSE ✕]</button><h3>Nothing left.</h3><div>THE FILTERS ATE THE BACKLOG.</div></div>';d.showModal();d.querySelector('#mclose').focus();d.querySelector('#mclose').onclick=()=>closeDialog(d);return}
  d.innerHTML=`<div class="pk"><button type="button" class="x" id="mclose">[CLOSE ✕]</button><h3 style="font-size:34px">What's the mood?</h3><p style="font-size:13px;opacity:.8;margin:0 0 14px">Optional — leave blank and the clerk will just pick something good from ${pool.length} open file${pool.length===1?'':'s'}.</p><label class="sr" for="moodin">Mood</label><input id="moodin" placeholder="e.g. something short and cozy tonight" style="width:100%;background:none;border:0;border-bottom:2px dotted var(--ink);padding:8px 0;outline:0;font-size:15px;text-align:center"><div class="ch" style="justify-content:center;margin-top:16px"><button type="button" id="moodgo" class="on">[✦ ASK THE CLERK]</button></div></div>`;
  d.showModal();d.querySelector('#mclose').onclick=()=>closeDialog(d);const mi=d.querySelector('#moodin');mi.focus();
@@ -302,9 +358,9 @@ function cfg(){lastFocus=document.activeElement;const d=$('#cfg');
  <div class="prov"><span><span class="dot" data-dot="rawg"></span>RAWG — Metacritic &amp; ratings, needs key</span></div>
  <p style="font-size:12px;opacity:.75;margin:8px 0">Providers run in order; the first usable image wins, metadata merges from all of them. Keys are stored only in this browser.</p>
  <label class="sr" for="sgdbkey">SteamGridDB API key</label>
- <input id="sgdbkey" placeholder="SteamGridDB key (optional)" value="${esc(SGDB_KEY)}" style="width:100%;background:none;border:0;border-bottom:2px dotted var(--ink);padding:6px 0;outline:0;font-size:15px;margin-bottom:8px">
+ <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><input id="sgdbkey" type="password" placeholder="SteamGridDB key (optional)" value="${esc(SGDB_KEY)}" style="flex:1;background:none;border:0;border-bottom:2px dotted var(--ink);padding:6px 0;outline:0;font-size:15px"><button type="button" class="pwtoggle" data-for="sgdbkey">[SHOW]</button></div>
  <label class="sr" for="key">RAWG API key</label>
- <input id="key" placeholder="RAWG key (optional) — get one free at rawg.io/apidocs" value="${esc(RAWG_KEY)}" style="width:100%;background:none;border:0;border-bottom:2px dotted var(--ink);padding:6px 0;outline:0;font-size:15px">
+ <div style="display:flex;align-items:center;gap:8px"><input id="key" type="password" placeholder="RAWG key (optional) — get one free at rawg.io/apidocs" value="${esc(RAWG_KEY)}" style="flex:1;background:none;border:0;border-bottom:2px dotted var(--ink);padding:6px 0;outline:0;font-size:15px"><button type="button" class="pwtoggle" data-for="key">[SHOW]</button></div>
  <div class="ch" style="margin-top:10px"><button type="button" id="ksave">[SAVE KEYS &amp; RE-FETCH]</button></div></div>
  <div class="desk-sec"><h4>AI (SMART PICK · ASK SEARCH · AUTO-TAG)</h4>
  <p style="font-size:12px;opacity:.75;margin:0 0 8px">Works with any OpenAI-compatible endpoint. Default below is <a style="color:var(--rd)" target="_blank" rel="noopener" href="https://openrouter.ai/keys">OpenRouter</a> with a free model (no card, ~200 req/day). Also works with <a style="color:var(--rd)" target="_blank" rel="noopener" href="https://aistudio.google.com/apikey">Gemini</a> (OpenAI-compat endpoint), <a style="color:var(--rd)" target="_blank" rel="noopener" href="https://console.groq.com/keys">Groq</a>, or a local Ollama server. Key is stored only in this browser and sent only to the endpoint URL below.</p>
@@ -313,15 +369,19 @@ function cfg(){lastFocus=document.activeElement;const d=$('#cfg');
  <label class="sr" for="aimodel">AI model</label>
  <input id="aimodel" placeholder="deepseek/deepseek-chat-v3.1:free" value="${esc(AI_MODEL)}" style="width:100%;background:none;border:0;border-bottom:2px dotted var(--ink);padding:6px 0;outline:0;font-size:13px;margin-bottom:8px">
  <label class="sr" for="aikey">AI API key</label>
- <input id="aikey" type="password" placeholder="API key" value="${esc(AI_KEY)}" style="width:100%;background:none;border:0;border-bottom:2px dotted var(--ink);padding:6px 0;outline:0;font-size:13px">
- <div class="ch" style="margin-top:10px"><button type="button" id="aisave">[SAVE AI SETTINGS]</button><button type="button" id="aitest">[TEST CONNECTION]</button><span id="aistatus" style="font-size:12px"></span></div></div>
- <div class="desk-sec"><h4>DATA</h4><div class="ch"><button type="button" id="snd">[SOUND: ${SND?'ON':'OFF'}]</button><button type="button" id="exj">[EXPORT PROGRESS]</button><button type="button" id="imj">[IMPORT]</button><button type="button" id="exm">[EXPORT games.md]</button><button type="button" id="rst" style="color:var(--rd)">[SHRED PROGRESS]</button></div></div>
- <div style="font-size:12px;opacity:.7">KEYS: / SEARCH · R PULL A CARD · G GROUPS · ESC CLOSE · SHIFT-CLICK A FILTER TO GO BACKWARDS</div></div>`;
+ <div style="display:flex;align-items:center;gap:8px"><input id="aikey" type="password" placeholder="API key" value="${esc(AI_KEY)}" style="flex:1;background:none;border:0;border-bottom:2px dotted var(--ink);padding:6px 0;outline:0;font-size:13px"><button type="button" class="pwtoggle" data-for="aikey">[SHOW]</button></div>
+ <div id="aiurlerr" style="color:var(--rd);font-size:11px;margin-top:4px"></div>
+ <div class="ch" style="margin-top:10px"><button type="button" id="aisave">[SAVE AI SETTINGS]</button><button type="button" id="aitest">[TEST CONNECTION]</button><button type="button" id="airst">[RESET TO DEFAULT]</button><span id="aistatus" style="font-size:12px"></span></div>
+ <div class="ch" style="margin-top:8px"><button type="button" id="triage">[✦ TRIAGE BACKLOG]</button></div></div>
+ <div class="desk-sec"><h4>DATA</h4><div class="ch"><button type="button" id="snd">[SOUND: ${SND?'ON':'OFF'}]</button><button type="button" id="exj">[EXPORT PROGRESS]</button><button type="button" id="imj">[IMPORT]</button><button type="button" id="exm">[EXPORT games.md]</button><button type="button" id="rst" style="color:var(--rd)">[SHRED PROGRESS]</button></div>
+ <p style="font-size:11px;opacity:.7;margin:6px 0 0">EXPORT games.md writes the game list + status only. Use EXPORT PROGRESS to back up ratings, notes, favorites and tags — they don't round-trip through games.md.</p></div>
+ <div style="font-size:12px;opacity:.7">KEYS: / SEARCH · R PULL A CARD · G GROUPS · T SPEED TRIAGE (1–4 SET STATUS, → SKIP) · ESC CLOSE · SHIFT-CLICK A FILTER TO GO BACKWARDS · DUPLICATE GENRE HEADERS MERGE</div></div>`;
  d.showModal();updateProvDots();d.querySelector('#cclose').focus()}
 const dl=(n,t,m)=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:m}));a.download=n;a.click();URL.revokeObjectURL(a.href)};
 
 /* ---------- AI (OpenAI-compatible chat completions; works with OpenRouter, Groq, Gemini, local Ollama, etc.) ---------- */
-let AI_URL=LS('ba_ai_url','https://openrouter.ai/api/v1/chat/completions'),AI_KEY=LS('ba_ai_key',''),AI_MODEL=LS('ba_ai_model','deepseek/deepseek-chat-v3.1:free'),TAGS=LS('ba_tags',{}),NL_MODE=LS('ba_nlmode',false);
+const AI_DEFAULT_URL='https://openrouter.ai/api/v1/chat/completions',AI_DEFAULT_MODEL='deepseek/deepseek-chat-v3.1:free';
+let AI_URL=LS('ba_ai_url',AI_DEFAULT_URL),AI_KEY=LS('ba_ai_key',''),AI_MODEL=LS('ba_ai_model',AI_DEFAULT_MODEL),TAGS=LS('ba_tags',{}),NL_MODE=LS('ba_nlmode',false);
 const aiReady=()=>!!(AI_URL&&AI_KEY&&AI_MODEL);
 async function aiChat(messages,{json=false,maxTokens=700}={}){
  if(!aiReady())throw new Error('no-key');
@@ -359,6 +419,15 @@ async function aiSearch(query){
  if(!Array.isArray(arr))throw new Error('expected array');
  return new Set(arr.filter(k=>typeof k==='string'))}
 
+async function aiTriageBacklog(){
+ const pool=G.filter(g=>st(g)==='todo'),capped=pool.slice(0,150),truncated=pool.length>150;
+ const brief=poolBrief(capped);
+ const sys='You review a JSON list of backlog games and flag ones unlikely to ever be played (very old platform, duplicate of something already completed in the same series, etc). Reply with ONLY a JSON array of {"key":"<k>","reason":"<one short sentence>"}. Only include games you would genuinely recommend abandoning — do not pad the list.';
+ const out=await aiChat([{role:'system',content:sys},{role:'user',content:JSON.stringify(brief)}],{json:false,maxTokens:900});
+ const arr=extractJSON(out);if(!Array.isArray(arr))throw new Error('expected array');
+ const items=arr.filter(x=>x&&typeof x.key==='string').map(x=>({g:pool.find(p=>p.k===x.key),reason:x.reason||''})).filter(x=>x.g);
+ return{items,truncated}}
+
 async function aiTag(g){
  const sys='Given one video game, reply with ONLY a JSON array of 3-5 short lowercase mood/theme tags (1-2 words each, e.g. "cozy", "high difficulty", "story-rich", "multiplayer", "short burst"). No other text.';
  const out=await aiChat([{role:'system',content:sys},{role:'user',content:`${g.n}${g.y?' ('+g.y+')':''} — genre: ${g.g}`}],{json:false,maxTokens:80});
@@ -372,11 +441,12 @@ let aiSearchTok=0;
 function applyNlMode(){$('#nlt').setAttribute('aria-pressed',NL_MODE);$('#q').placeholder=NL_MODE?"ask in plain english_":'type here_'}
 $('#nlt').onclick=()=>{
  if(!NL_MODE&&!aiReady()){toast('Set an AI key in [DESK] first');return}
- NL_MODE=!NL_MODE;SV('ba_nlmode',NL_MODE);applyNlMode();AI_KEYSET=new Set();F.q=$('#q').value.trim();render(1)};
+ NL_MODE=!NL_MODE;SV('ba_nlmode',NL_MODE);applyNlMode();AI_KEYSET=new Set();F.q=$('#q').value.trim();$('#qclr').hidden=!$('#q').value;render(1)};
 applyNlMode();
 $('#q').oninput=e=>{clearTimeout(qDeb);const v=e.target.value;$('#qclr').hidden=!v;
  if(NL_MODE){qDeb=setTimeout(()=>runNlSearch(v),500);return}
  qDeb=setTimeout(()=>{F.q=v;render(1)},180)};
+$('#q').addEventListener('keydown',e=>{if(e.key==='Enter'&&NL_MODE){clearTimeout(qDeb);runNlSearch(e.target.value)}});
 async function runNlSearch(q){
  const myTok=++aiSearchTok;q=q.trim();
  if(!q){AI_KEYSET=new Set();F.q='';render(1);return}
@@ -406,20 +476,32 @@ function wireDialog(id){const d=$(id);
   if(!f.length)return;const first=f[0],last=f[f.length-1];
   if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}})}
 wireDialog('#m');wireDialog('#cfg');
-$('#m').addEventListener('click',e=>{const t=e.target,id=t.dataset.id;
- if(t.dataset.s){setSt(G[id],t.dataset.s);open(+id)}else if(t.dataset.r){const u=S[G[id].k]??={};u.r=u.r===+t.dataset.r?0:+t.dataset.r;save();render();open(+id)}
- else if(t.dataset.fav){const u=S[G[id].k]??={};u.f=!u.f;save();render();open(+id)}else if(t.dataset.play){setSt(G[+t.dataset.play],'play');closeDialog($('#m'))}
+$('#m').addEventListener('click',e=>{const t=e.target,gi=+t.dataset.id;
+ if(t.dataset.retry){const g=G[+t.dataset.retry];if(g){g._retry=true;delete ART[g.k];enqueue(g);refreshCardArt(g)}}
+ else if(t.dataset.action==='start'){SESSION={gi,start:Date.now()};open(gi);startSessionTick()}
+ else if(t.dataset.action==='end'){clearInterval(sessionIv);const hrs=(Date.now()-SESSION.start)/3600000;SESSION=null;SESSION_PENDING={gi,hrs};open(gi)}
+ else if(t.dataset.sessionconfirm==='add'){const u=S[G[gi].k]??={};u.played=(u.played||0)+SESSION_PENDING.hrs;u.ts=Date.now();save();SESSION_PENDING=null;render();open(gi)}
+ else if(t.dataset.sessionconfirm==='discard'){SESSION_PENDING=null;open(gi)}
+ else if(t.dataset.triageconfirm){const g=G[+t.dataset.triageconfirm];setSt(g,'drop');t.closest('[data-triage-row]')?.remove()}
+ else if(t.dataset.triagedismiss){t.closest('[data-triage-row]')?.remove()}
+ else if(t.dataset.s){setSt(G[gi],t.dataset.s);open(gi)}else if(t.dataset.r){const u=S[G[gi].k]??={};u.r=u.r===+t.dataset.r?0:+t.dataset.r;u.ts=Date.now();save();render();open(gi)}
+ else if(t.dataset.fav){const u=S[G[gi].k]??={};u.f=!u.f;u.ts=Date.now();save();render();open(gi)}else if(t.dataset.play){setSt(G[+t.dataset.play],'play');closeDialog($('#m'))}
  else if(t.dataset.more)open(+t.dataset.more);else if(t.id==='again')pick();
  else if(t.id==='autotag'){
   if(!aiReady()){toast('Set an AI key in [DESK] first');return}
-  const g=G[+t.dataset.id];t.textContent='[TAGGING…]';t.disabled=true;
-  aiTag(g).then(tags=>{TAGS[g.k]=tags;SV('ba_tags',TAGS);open(+t.dataset.id);rail();announce(`Tagged ${g.n}`)})
+  const g=G[gi];t.textContent='[TAGGING…]';t.disabled=true;
+  aiTag(g).then(tags=>{TAGS[g.k]=tags;SV('ba_tags',TAGS);open(gi);rail();announce(`Tagged ${g.n}`)})
    .catch(err=>{toast('Tagging failed: '+(err.message||'unknown error'));t.textContent='[✦ AUTO-TAG]';t.disabled=false})
  }else if(t.dataset.tagjump){
   closeDialog($('#m'));NL_MODE=false;SV('ba_nlmode',false);applyNlMode();$('#q').value=t.dataset.tagjump;F.q=t.dataset.tagjump;$('#qclr').hidden=false;render(1)
  }});
-$('#m').addEventListener('input',e=>{if(e.target.id==='note'){(S[G[+e.target.dataset.id].k]??={}).n=e.target.value;save()}});
+let noteDeb,noteFlush=null;
+$('#m').addEventListener('input',e=>{if(e.target.id==='note'){const val=e.target.value,gi=+e.target.dataset.id;clearTimeout(noteDeb);
+ noteFlush=()=>{const u=S[G[gi].k]??={};u.n=val;u.ts=Date.now();save();noteFlush=null};
+ noteDeb=setTimeout(noteFlush,250)}});
+addEventListener('pagehide',()=>{noteFlush?.()});
 $('#cfg').addEventListener('click',e=>{const i=e.target.id;
+ if(e.target.classList.contains('pwtoggle')){const inp=$('#'+e.target.dataset.for);const show=inp.type==='password';inp.type=show?'text':'password';e.target.textContent=show?'[HIDE]':'[SHOW]';return}
  if(i==='ksave'){RAWG_KEY=$('#key').value.trim();SGDB_KEY=$('#sgdbkey').value.trim();SV('ba_key',RAWG_KEY);SV('ba_sgdb',SGDB_KEY);
   PROV_STATE.sgdb=SGDB_KEY?'off':'disabled';PROV_STATE.rawg=RAWG_KEY?'off':'disabled';
   G.forEach(g=>{g.q=0;g._retry=true});Object.keys(ART).forEach(k=>delete ART[k]);document.querySelectorAll('.c[data-i]').forEach(c=>io.observe(c));
@@ -428,9 +510,21 @@ $('#cfg').addEventListener('click',e=>{const i=e.target.id;
  else if(i==='exj'){dl('backlog-progress.json',JSON.stringify(S,null,1),'application/json');toast('Progress exported')}
  else if(i==='imj'){$('#file').dataset.mode='json';$('#file').click()}
  else if(i==='exm'){let o='GAMES\n',g0='';G.forEach(g=>{if(g.g!==g0){o+=`\n${g.g}\n\n`;g0=g.g}o+=`- [${st(g)==='done'?'x':' '}] ${g.n}${g.y?` (${g.y})`:''}${g.t!=='N/A'||g.h==null?` - [${g.t}]`:''}\n`});dl('games.md',o,'text/markdown');toast('games.md exported')}
- else if(i==='rst'&&confirm('Shred all status, grades and notes? This cannot be undone.')){S={};save();render();closeDialog($('#cfg'));toast('Progress shredded')}
- else if(i==='aisave'){AI_URL=$('#aiurl').value.trim();AI_MODEL=$('#aimodel').value.trim();AI_KEY=$('#aikey').value.trim();
+ else if(i==='rst'){
+  if(!shredArmed){shredArmed=true;e.target.textContent='[CONFIRM SHRED — CLICK AGAIN]';e.target.style.animation='pulse 1s ease-in-out infinite';
+   clearTimeout(shredTimer);shredTimer=setTimeout(()=>{shredArmed=false;e.target.textContent='[SHRED PROGRESS]';e.target.style.animation=''},4000)}
+  else{clearTimeout(shredTimer);shredArmed=false;e.target.textContent='[SHRED PROGRESS]';e.target.style.animation='';
+   const prev=S;SV('ba_state_prev',prev);S={};save();render();closeDialog($('#cfg'));
+   toastUndo('Progress shredded',()=>{S=prev;save();render()})}
+ }
+ else if(i==='aisave'){
+  const url=$('#aiurl').value.trim(),model=$('#aimodel').value.trim(),key=$('#aikey').value.trim(),errEl=$('#aiurlerr');
+  if(url&&!isHttpUrl(url)){errEl.textContent='Enter a valid http(s) URL.';return}
+  errEl.textContent='';
+  AI_URL=url;AI_MODEL=model;AI_KEY=key;
   SV('ba_ai_url',AI_URL);SV('ba_ai_model',AI_MODEL);SV('ba_ai_key',AI_KEY);toast(aiReady()?'AI settings saved':'Saved — fill in all three fields to enable AI features')}
+ else if(i==='airst'){$('#aiurl').value=AI_DEFAULT_URL;$('#aimodel').value=AI_DEFAULT_MODEL;$('#aikey').value='';$('#aiurlerr').textContent=''}
+ else if(i==='triage'){closeDialog($('#cfg'));triageUI()}
  else if(i==='aitest'){
   AI_URL=$('#aiurl').value.trim();AI_MODEL=$('#aimodel').value.trim();AI_KEY=$('#aikey').value.trim();
   const statusEl=$('#aistatus');statusEl.textContent='testing…';statusEl.style.color='';
@@ -440,15 +534,44 @@ $('#cfg').addEventListener('click',e=>{const i=e.target.id;
 $('#file').onchange=async e=>{const f=e.target.files[0];if(!f)return;
  if(f.size>8*1024*1024){toast('File too large');e.target.value='';return}
  const t=await f.text();
- if(e.target.dataset.mode==='json'){try{const parsed=JSON.parse(t);if(parsed&&typeof parsed==='object'&&!Array.isArray(parsed)){S=parsed;save();render(1);toast('Progress imported')}else toast('Invalid progress file')}catch{toast('Could not parse JSON')}}
+ if(e.target.dataset.mode==='json'){
+  let parsed;try{parsed=JSON.parse(t)}catch{toast('Could not parse JSON');e.target.value='';e.target.dataset.mode='';return}
+  if(!parsed||typeof parsed!=='object'||Array.isArray(parsed)){toast('Invalid progress file');e.target.value='';e.target.dataset.mode='';return}
+  let bad=null;for(const k in parsed){if(parsed[k]!=null&&(typeof parsed[k]!=='object'||Array.isArray(parsed[k]))){bad=k;break}}
+  if(bad!=null){toast(`Invalid entry for key "${bad}" — import cancelled`);e.target.value='';e.target.dataset.mode='';return}
+  if(Object.keys(S).length)promptMergeChoice(parsed);else{S=parsed;save();render(1);toast('Progress imported')}
+ }
  else load(t);
  e.target.value='';e.target.dataset.mode=''};
+function promptMergeChoice(incoming){const d=$('#cfg');
+ d.innerHTML=`<div class="pk" style="text-align:left"><button type="button" class="x" id="mcClose">[CLOSE ✕]</button><h3 style="font-size:34px">Import progress</h3><p>You already have saved progress on this device. How should the import be applied?</p>
+ <div class="ch" style="margin-top:14px"><button type="button" id="mReplace">[REPLACE ALL]</button><button type="button" id="mMerge">[MERGE — NEWER WINS]</button><button type="button" id="mCancel">[CANCEL]</button></div></div>`;
+ if(!d.open)d.showModal();
+ d.querySelector('#mcClose').onclick=()=>closeDialog(d);
+ d.querySelector('#mReplace').onclick=()=>{S=incoming;save();render(1);closeDialog(d);toast('Progress imported (replaced)')};
+ d.querySelector('#mMerge').onclick=()=>{
+  const merged={...S};
+  for(const k in incoming){const inc=incoming[k],cur=S[k];
+   merged[k]=cur?((inc?.ts||0)>=(cur?.ts||0)?inc:cur):inc}
+  S=merged;save();render(1);closeDialog(d);toast('Progress merged')};
+ d.querySelector('#mCancel').onclick=()=>closeDialog(d)}
 addEventListener('keydown',e=>{
  if(e.key==='Escape'){if($('#m').open)closeDialog($('#m'));else if($('#cfg').open)closeDialog($('#cfg'));return}
+ if($('#m').open&&$('#m').dataset.speedrun==='1'&&!e.target.matches('input,textarea')){
+  const g=TRIAGE_POOL?.[TRIAGE_IDX];if(!g)return;
+  if(['1','2','3','4'].includes(e.key)){setSt(g,ORD[+e.key-1]);speedRunAdvance()}else if(e.key==='ArrowRight')speedRunAdvance();
+  return}
  if(e.target.matches('input,textarea')||$('#m').open||$('#cfg').open)return;
- if(e.key==='/'){e.preventDefault();$('#q').focus()}else if(e.key==='r')pick();else if(e.key==='g'){F.group^=1;render(1)}});
+ if(e.key==='/'){e.preventDefault();$('#q').focus()}else if(e.key==='r')pick();else if(e.key==='g'){F.group^=1;render(1)}else if(e.key==='t')speedRunUI()});
 addEventListener('dragover',e=>e.preventDefault());
 addEventListener('drop',async e=>{e.preventDefault();const f=e.dataTransfer.files?.[0];if(f)load(await f.text())});
-function load(t){G=parse(t);rail();render(1);announce(`Loaded ${G.length} files`)}
+function load(t){const{games,warnings}=parse(t);G=games;rail();render(1);announce(`Loaded ${G.length} files`);showParseWarnings(warnings)}
+function showParseWarnings(warnings){const old=document.getElementById('pwarn');old?.remove();if(!warnings.length)return;
+ const b=document.createElement('div');b.id='pwarn';b.style.cssText='background:var(--rd);color:var(--ink);padding:8px 14px;font-size:13px;margin:10px 0;rotate:-.4deg';
+ b.innerHTML=`${warnings.length} line${warnings.length===1?'':'s'} in games.md could not be read — <button type="button" id="pwShow" style="text-decoration:underline">[SHOW]</button><button type="button" id="pwDismiss" style="margin-left:10px">[DISMISS]</button><pre id="pwPre" style="display:none;white-space:pre-wrap;margin:8px 0 0;font-size:12px;background:#0002;padding:8px"></pre>`;
+ b.querySelector('#pwPre').textContent=warnings.join('\n');
+ b.querySelector('#pwShow').onclick=()=>{const p=b.querySelector('#pwPre');p.style.display=p.style.display==='none'?'block':'none'};
+ b.querySelector('#pwDismiss').onclick=()=>b.remove();
+ $('#out').before(b)}
 fetch('games.md',{cache:'no-cache'}).then(r=>{if(!r.ok)throw 0;return r.text()}).then(load).catch(()=>{$('#out').innerHTML='<div class="empty">THE ARCHIVE (games.md) WON’T OPEN.<br><br><button type="button" id="pickFile2">[CHOOSE games.md]</button> OR DROP IT ON THE DESK.</div>';$('#pickFile2')?.addEventListener('click',()=>$('#file').click())});
 </script></body></html>
