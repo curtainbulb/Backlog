@@ -367,7 +367,9 @@ function cfg(){lastFocus=document.activeElement;const d=$('#cfg');
  <label class="sr" for="aiurl">AI endpoint URL</label>
  <input id="aiurl" placeholder="https://openrouter.ai/api/v1/chat/completions" value="${esc(AI_URL)}" style="width:100%;background:none;border:0;border-bottom:2px dotted var(--ink);padding:6px 0;outline:0;font-size:13px;margin-bottom:8px">
  <label class="sr" for="aimodel">AI model</label>
- <input id="aimodel" placeholder="deepseek/deepseek-chat-v3.1:free" value="${esc(AI_MODEL)}" style="width:100%;background:none;border:0;border-bottom:2px dotted var(--ink);padding:6px 0;outline:0;font-size:13px;margin-bottom:8px">
+ <select id="aimodel" style="width:100%;background:none;border:0;border-bottom:2px dotted var(--ink);padding:6px 0;outline:0;font-size:13px"><option value="${esc(AI_MODEL)}">${esc(AI_MODEL)}</option></select>
+ <input id="aimodelcustom" hidden placeholder="provider/model-id" value="${esc(AI_MODEL)}" style="width:100%;background:none;border:0;border-bottom:2px dotted var(--ink);padding:6px 0;outline:0;font-size:13px">
+ <div style="display:flex;align-items:center;gap:10px;margin:4px 0 8px"><button type="button" id="refreshmodels" style="font-size:11px">[↻ REFRESH FREE MODELS]</button><button type="button" id="custommodel" style="font-size:11px">[ENTER MODEL ID MANUALLY]</button><span id="modelstatus" style="font-size:11px;opacity:.7"></span></div>
  <label class="sr" for="aikey">AI API key</label>
  <div style="display:flex;align-items:center;gap:8px"><input id="aikey" type="password" placeholder="API key" value="${esc(AI_KEY)}" style="flex:1;background:none;border:0;border-bottom:2px dotted var(--ink);padding:6px 0;outline:0;font-size:13px"><button type="button" class="pwtoggle" data-for="aikey">[SHOW]</button></div>
  <div id="aiurlerr" style="color:var(--rd);font-size:11px;margin-top:4px"></div>
@@ -376,8 +378,40 @@ function cfg(){lastFocus=document.activeElement;const d=$('#cfg');
  <div class="desk-sec"><h4>DATA</h4><div class="ch"><button type="button" id="snd">[SOUND: ${SND?'ON':'OFF'}]</button><button type="button" id="exj">[EXPORT PROGRESS]</button><button type="button" id="imj">[IMPORT]</button><button type="button" id="exm">[EXPORT games.md]</button><button type="button" id="rst" style="color:var(--rd)">[SHRED PROGRESS]</button></div>
  <p style="font-size:11px;opacity:.7;margin:6px 0 0">EXPORT games.md writes the game list + status only. Use EXPORT PROGRESS to back up ratings, notes, favorites and tags — they don't round-trip through games.md.</p></div>
  <div style="font-size:12px;opacity:.7">KEYS: / SEARCH · R PULL A CARD · G GROUPS · T SPEED TRIAGE (1–4 SET STATUS, → SKIP) · ESC CLOSE · SHIFT-CLICK A FILTER TO GO BACKWARDS · DUPLICATE GENRE HEADERS MERGE</div></div>`;
- d.showModal();updateProvDots();d.querySelector('#cclose').focus()}
+ d.showModal();updateProvDots();d.querySelector('#cclose').focus();
+ if(isOpenRouter())populateModelSelect(false);else{$('#aimodel').hidden=true;$('#aimodelcustom').hidden=false;$('#custommodel').hidden=true;$('#refreshmodels').hidden=true}}
 const dl=(n,t,m)=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:m}));a.download=n;a.click();URL.revokeObjectURL(a.href)};
+
+/* ---------- AI model catalog — auto-fetched from OpenRouter's public /models endpoint, which is the one
+   catalog that aggregates free-tier models across Mistral, Meta, Qwen, Anthropic, OpenAI, xAI and Google
+   behind a single CORS-enabled, keyless listing. Native provider APIs (api.openai.com, api.anthropic.com,
+   generativelanguage.googleapis.com, api.mistral.ai, api.x.ai) don't allow browser-side CORS listing calls,
+   so auto-fetch only works while the endpoint is OpenRouter; other endpoints fall back to manual entry. */
+const AI_VENDOR_LABELS={mistralai:'Mistral','meta-llama':'Meta (Llama)',qwen:'Qwen',anthropic:'Anthropic (Claude)',openai:'OpenAI (ChatGPT)','x-ai':'xAI (Grok)',google:'Google (Gemini)',deepseek:'DeepSeek',microsoft:'Microsoft',nvidia:'NVIDIA'};
+const AI_VENDOR_PRIORITY=['mistralai','meta-llama','qwen','anthropic','openai','x-ai','google'];
+let MODEL_CATALOG=LS('ba_model_cache',null);
+const isOpenRouter=()=>!$('#aiurl').value.trim()||$('#aiurl').value.trim().includes('openrouter.ai');
+async function fetchModelCatalog(force){
+ if(!force&&MODEL_CATALOG&&Date.now()-MODEL_CATALOG.ts<864e5)return MODEL_CATALOG.models;
+ const r=await fetch('https://openrouter.ai/api/v1/models');
+ if(!r.ok)throw new Error('HTTP '+r.status);
+ const j=await r.json();
+ const models=(j.data||[]).filter(m=>m.id?.endsWith(':free')||(m.pricing?.prompt==='0'&&m.pricing?.completion==='0'))
+  .map(m=>({id:m.id,name:m.name||m.id,vendor:m.id.split('/')[0]}));
+ MODEL_CATALOG={ts:Date.now(),models};SV('ba_model_cache',MODEL_CATALOG);
+ return models}
+function renderModelOptions(models,selected){
+ const groups={};models.forEach(m=>(groups[m.vendor]=groups[m.vendor]||[]).push(m));
+ const vendors=Object.keys(groups).sort((a,b)=>{const ia=AI_VENDOR_PRIORITY.indexOf(a),ib=AI_VENDOR_PRIORITY.indexOf(b);
+  if(ia===-1&&ib===-1)return a.localeCompare(b);if(ia===-1)return 1;if(ib===-1)return-1;return ia-ib});
+ let html=vendors.map(v=>`<optgroup label="${esc(AI_VENDOR_LABELS[v]||v)}">${groups[v].sort((a,b)=>a.name.localeCompare(b.name)).map(m=>`<option value="${esc(m.id)}"${m.id===selected?' selected':''}>${esc(m.name)}</option>`).join('')}</optgroup>`).join('');
+ if(selected&&!models.some(m=>m.id===selected))html=`<option value="${esc(selected)}" selected>${esc(selected)} (current)</option>`+html;
+ return html}
+async function populateModelSelect(force){
+ const sel=$('#aimodel');if(!sel||!isOpenRouter())return;const status=$('#modelstatus');
+ if(status)status.textContent='Fetching free models…';
+ try{const models=await fetchModelCatalog(force);if(!$('#aimodel'))return;sel.innerHTML=renderModelOptions(models,sel.value||AI_MODEL);if(status)status.textContent=`${models.length} free models loaded, grouped by provider`}
+ catch(err){if(status)status.textContent='Could not fetch the model list — use [ENTER MODEL ID MANUALLY]'}}
 
 /* ---------- AI (OpenAI-compatible chat completions; works with OpenRouter, Groq, Gemini, local Ollama, etc.) ---------- */
 const AI_DEFAULT_URL='https://openrouter.ai/api/v1/chat/completions',AI_DEFAULT_MODEL='deepseek/deepseek-chat-v3.1:free';
@@ -500,6 +534,10 @@ $('#m').addEventListener('input',e=>{if(e.target.id==='note'){const val=e.target
  noteFlush=()=>{const u=S[G[gi].k]??={};u.n=val;u.ts=Date.now();save();noteFlush=null};
  noteDeb=setTimeout(noteFlush,250)}});
 addEventListener('pagehide',()=>{noteFlush?.()});
+const curModelVal=()=>$('#aimodelcustom').hidden?$('#aimodel').value.trim():$('#aimodelcustom').value.trim();
+$('#cfg').addEventListener('input',e=>{if(e.target.id!=='aiurl')return;
+ if(isOpenRouter()){$('#aimodel').hidden=false;$('#custommodel').hidden=false;$('#refreshmodels').hidden=false;if(!MODEL_CATALOG)populateModelSelect(false)}
+ else{$('#aimodel').hidden=true;$('#aimodelcustom').hidden=false;$('#custommodel').hidden=true;$('#refreshmodels').hidden=true}});
 $('#cfg').addEventListener('click',e=>{const i=e.target.id;
  if(e.target.classList.contains('pwtoggle')){const inp=$('#'+e.target.dataset.for);const show=inp.type==='password';inp.type=show?'text':'password';e.target.textContent=show?'[HIDE]':'[SHOW]';return}
  if(i==='ksave'){RAWG_KEY=$('#key').value.trim();SGDB_KEY=$('#sgdbkey').value.trim();SV('ba_key',RAWG_KEY);SV('ba_sgdb',SGDB_KEY);
@@ -518,15 +556,20 @@ $('#cfg').addEventListener('click',e=>{const i=e.target.id;
    toastUndo('Progress shredded',()=>{S=prev;save();render()})}
  }
  else if(i==='aisave'){
-  const url=$('#aiurl').value.trim(),model=$('#aimodel').value.trim(),key=$('#aikey').value.trim(),errEl=$('#aiurlerr');
+  const url=$('#aiurl').value.trim(),model=curModelVal(),key=$('#aikey').value.trim(),errEl=$('#aiurlerr');
   if(url&&!isHttpUrl(url)){errEl.textContent='Enter a valid http(s) URL.';return}
+  if(!model){errEl.textContent='Pick or enter a model.';return}
   errEl.textContent='';
   AI_URL=url;AI_MODEL=model;AI_KEY=key;
   SV('ba_ai_url',AI_URL);SV('ba_ai_model',AI_MODEL);SV('ba_ai_key',AI_KEY);toast(aiReady()?'AI settings saved':'Saved — fill in all three fields to enable AI features')}
- else if(i==='airst'){$('#aiurl').value=AI_DEFAULT_URL;$('#aimodel').value=AI_DEFAULT_MODEL;$('#aikey').value='';$('#aiurlerr').textContent=''}
+ else if(i==='airst'){$('#aiurl').value=AI_DEFAULT_URL;$('#aikey').value='';$('#aiurlerr').textContent='';
+  $('#aimodel').hidden=false;$('#aimodelcustom').hidden=true;$('#custommodel').hidden=false;
+  $('#aimodel').innerHTML=`<option value="${esc(AI_DEFAULT_MODEL)}" selected>${esc(AI_DEFAULT_MODEL)}</option>`;populateModelSelect(false)}
+ else if(i==='custommodel'){$('#aimodelcustom').value=$('#aimodel').hidden?$('#aimodelcustom').value:$('#aimodel').value;$('#aimodel').hidden=true;$('#aimodelcustom').hidden=false;$('#custommodel').hidden=true}
+ else if(i==='refreshmodels')populateModelSelect(true);
  else if(i==='triage'){closeDialog($('#cfg'));triageUI()}
  else if(i==='aitest'){
-  AI_URL=$('#aiurl').value.trim();AI_MODEL=$('#aimodel').value.trim();AI_KEY=$('#aikey').value.trim();
+  AI_URL=$('#aiurl').value.trim();AI_MODEL=curModelVal();AI_KEY=$('#aikey').value.trim();
   const statusEl=$('#aistatus');statusEl.textContent='testing…';statusEl.style.color='';
   if(!aiReady()){statusEl.textContent='fill in URL, model and key first';return}
   aiChat([{role:'user',content:'Reply with exactly: OK'}],{maxTokens:10}).then(()=>{statusEl.textContent='✓ connected';statusEl.style.color='var(--gn)'})
