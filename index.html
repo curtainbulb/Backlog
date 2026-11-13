@@ -117,8 +117,8 @@ textarea{width:100%;min-height:96px;background:repeating-linear-gradient(transpa
 const $=s=>document.querySelector(s),LS=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch{return d}},SV=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const isHttpUrl=u=>{try{const x=new URL(u);return x.protocol==='https:'||x.protocol==='http:'}catch{return false}};
-let G=[],S=LS('ba_state',{}),ART=LS('ba_art',{}),RAW=LS('ba_rawg',{}),SGDB_KEY=LS('ba_sgdb',''),RAWG_KEY=LS('ba_key',''),SND=LS('ba_snd',true),CL=new Set(LS('ba_col',[])),SLAM=-1,AC;
-const PROV_STATE={wiki:'off',steam:'off',sgdb:SGDB_KEY?'off':'disabled',rawg:RAWG_KEY?'off':'disabled'};
+let G=[],S=LS('ba_state',{}),ART=LS('ba_art',{}),RAW=LS('ba_rawg',{}),SGDB_KEY=LS('ba_sgdb',''),RAWG_KEY=LS('ba_key',''),GB_KEY=LS('ba_gb',''),SND=LS('ba_snd',true),CL=new Set(LS('ba_col',[])),SLAM=-1,AC;
+const PROV_STATE={wiki:'off',steam:'off',sgdb:SGDB_KEY?'off':'disabled',rawg:RAWG_KEY?'off':'disabled',gb:GB_KEY?'off':'disabled'};
 const F={q:'',g:new Set(),st:0,len:0,dec:0,sort:0,group:1};
 let AI_KEYSET=new Set();
 const O={st:[['all','ALL'],['todo','OPEN'],['play','ACTIVE'],['done','CLOSED'],['drop','ABANDONED'],['fav','FAVED']],len:[['any','ANY'],['0-10','<10H'],['10-25','10–25H'],['25-50','25–50H'],['50-999','50H+']],dec:[['any','ANY']],sort:[['genre','FILE ORDER'],['name','A–Z'],['new','NEWEST'],['old','OLDEST'],['short','SHORTEST'],['long','LONGEST'],['rate','BEST RATED']],group:[[1,'ON'],[0,'OFF']]};
@@ -149,10 +149,26 @@ function view(){const aiMode=F.q==='\u0000AI\u0000',q=aiMode?'':F.q.toLowerCase(
  if(aiMode){const order=new Map([...AI_KEYSET].map((k,i)=>[k,i]));res.sort((a,b)=>(order.get(a.k)??999)-(order.get(b.k)??999))}
  else res.sort(C[O.sort[F.sort][0]]);
  return res}
+function placeholderArt(g){
+ const hue=Math.round(rnd(g.id,30)*360),initials=g.n.split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('')||'?';
+ return`<svg viewBox="0 0 300 450" role="img" aria-label="No cover art for ${esc(g.n)}" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;display:block">
+  <rect width="300" height="450" fill="hsl(${hue} 28% 22%)"/>
+  <rect width="300" height="450" fill="none" stroke="hsl(${hue} 28% 40%)" stroke-width="10"/>
+  <text x="150" y="235" font-family="Georgia,serif" font-size="92" font-weight="700" fill="hsl(${hue} 40% 78%)" text-anchor="middle" dominant-baseline="middle">${esc(initials)}</text>
+ </svg>`}
+/* A stored image URL can go dead later (delisted store page, moved wiki asset) even though the
+   provider lookup once succeeded. Drop the cached URL so the next render falls back to the
+   placeholder instead of an empty box, and let the user retry the lookup from there. */
+function imgBroke(i,imgEl){const g=G[i];if(!g)return;const art=imgEl.closest('.art');art?.classList.remove('has-img');
+ if(ART[g.k])delete ART[g.k].img;if(RAW[g.k])delete RAW[g.k].img;
+ if(art){const keep=[...art.children].filter(e=>e.classList.contains('no')||e.classList.contains('stamp'));g._failed=true;g.q=0;art.innerHTML=artH(g);keep.forEach(e=>art.append(e))}}
 function artH(g){const s=ART[g.k],r=RAW[g.k],src=r?.img||s?.img,label=s?.src||r?.src,failed=g._failed,i=g.id;
- if(src)return`<img loading="lazy" alt="" referrerpolicy="no-referrer" class="ld" src="${esc(src)}" onerror="this.closest('.art').classList.remove('has-img');this.remove()">${label?`<span class="src">${esc(label)}<button type="button" data-retry="${i}" aria-label="Refetch art" title="Refetch art">↻</button></span>`:''}`;
+ if(src)return`<img loading="lazy" alt="" referrerpolicy="no-referrer" class="ld" src="${esc(src)}" onerror="imgBroke(${i},this)">${label?`<span class="src">${esc(label)}<button type="button" data-retry="${i}" aria-label="Refetch art" title="Refetch art">↻</button></span>`:''}`;
  const waiting=g.q===1&&!failed;
- return`<div class="rd${waiting?' wait':''}"><b style="width:${60+rnd(i,5)*36}%"></b><b style="width:${35+rnd(i,6)*45}%"></b><b style="width:${55+rnd(i,7)*40}%"></b><span>${waiting?'SEARCHING THE ARCHIVE…':'NO ART ON FILE'}</span>${failed?'<button type="button" data-retry="'+i+'">[RETRY]</button>':''}</div>`}
+ if(waiting)return`<div class="rd wait"><b style="width:${60+rnd(i,5)*36}%"></b><b style="width:${35+rnd(i,6)*45}%"></b><b style="width:${55+rnd(i,7)*40}%"></b><span>SEARCHING THE ARCHIVE…</span></div>`;
+ /* Every provider failed (or none are reachable, e.g. offline) — show a generated placeholder
+    instead of a perpetual loading skeleton, plus a retry affordance, so the grid never looks broken. */
+ return`${placeholderArt(g)}<div class="rd" style="position:absolute;inset:auto 0 0;justify-content:flex-end;padding-bottom:8px"><span>NO ART ON FILE</span><button type="button" data-retry="${i}">[RETRY]</button></div>`}
 function card(g,n){const s=st(g),u=S[g.k]||{},r=RAW[g.k]||{},i=g.id,ah=g.h==null?150:Math.round(100+Math.min(g.h,90)*3),hasImg=!!(r.img||ART[g.k]?.img),
  poly=`polygon(0 0,100% 0,100% ${98-rnd(i,9)*2}%,${[88,76,64,52,40,28,16,6].map((x,j)=>x+'% '+(97+rnd(i,10+j)*3)+'%').join(',')},0 ${98.5-rnd(i,20)}%)`;
  return`<div class="c s-${s}${u.f?' fv':''}" data-i="${i}" data-k="${esc(g.k)}" style="--r:${((rnd(i,1)-.5)*3.6).toFixed(2)}deg;--dx:${((rnd(i,2)-.5)*18).toFixed(1)}px;--mb:${(14+rnd(i,3)*32).toFixed(0)}px;--sr:${((rnd(i,4)-.5)*34).toFixed(0)}deg;--tp:${((rnd(i,8)-.5)*14).toFixed(0)}deg;--dl:${Math.min(n*14,700)}ms"><div class="p" style="clip-path:${poly}">
@@ -193,8 +209,17 @@ function titleSim(a,b){const A=splitEdition(a),B=splitEdition(b);a=A.base;b=B.ba
   const cov=hit/aw.length;score=b.startsWith(a)||a.startsWith(b)?Math.max(cov,.75):cov}
  return A.ed===B.ed?score:score*.3}
 
-async function fetchJSON(url,opts){const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),9000);
- try{const r=await fetch(url,{...opts,signal:ctl.signal});if(!r.ok)throw new Error('HTTP '+r.status);return await r.json()}finally{clearTimeout(tm)}}
+async function fetchRaw(url,opts,ms){const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),ms);
+ try{const r=await fetch(url,{...opts,signal:ctl.signal});if(!r.ok)throw new Error('HTTP '+r.status);return r}finally{clearTimeout(tm)}}
+/* Steam and RAWG don't send Access-Control-Allow-Origin, so a direct browser fetch throws an
+   opaque network error indistinguishable from "the API is down" — this was the main reason
+   posters silently never loaded. Retry once through a public CORS relay before giving up. */
+const CORS_PROXY='https://corsproxy.io/?url=';
+async function fetchJSON(url,opts){
+ try{return await(await fetchRaw(url,opts,9000)).json()}
+ catch(e){if(e.name==='AbortError')throw e;
+  try{return await(await fetchRaw(CORS_PROXY+encodeURIComponent(url),opts,9000)).json()}
+  catch{throw e}}}
 
 async function provWiki(g){
  const q=`${g.n}${g.y?' '+g.y:''} video game`;
@@ -231,7 +256,18 @@ async function provRAWG(g){
  if(!best||bestScore<.45)return null;
  return{img:best.background_image,src:'RAWG',mc:best.metacritic,rt:best.rating,rc:best.ratings_count,pl:(best.platforms||[]).map(p=>p.platform.name)}}
 
-const PROVIDERS=[['wiki',provWiki],['steam',provSteam],['sgdb',provSGDB],['rawg',provRAWG]];
+async function provGiantBomb(g){
+ if(!GB_KEY)return null;
+ const r=await fetchJSON(`https://www.giantbomb.com/api/search/?api_key=${encodeURIComponent(GB_KEY)}&format=json&resources=game&query=${encodeURIComponent(g.n)}&limit=5`);
+ const cands=(r.results||[]).filter(x=>x.image);if(!cands.length)return null;
+ let best=null,bestScore=0;for(const x of cands){const sc=titleSim(g.n,x.name);if(sc>bestScore){bestScore=sc;best=x}}
+ if(!best||bestScore<.45)return null;
+ return{img:best.image?.super_url||best.image?.medium_url||'',src:'Giant Bomb',ex:best.deck||''}}
+
+const PROVIDERS=[['wiki',provWiki],['steam',provSteam],['sgdb',provSGDB],['rawg',provRAWG],['gb',provGiantBomb]];
+/* Giant Bomb's search endpoint requires a plain fetch (not XHR) per their ToS and blocks the
+   corsproxy relay's User-Agent, so it fails closed instead of silently hanging — same contract
+   as every other provider: Promise.allSettled in job() isolates the failure per-provider. */
 
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){io.unobserve(e.target);enqueue(G[+e.target.dataset.i])}}),{rootMargin:'600px'});
 const Q=[];let run=0,dirty=0;
@@ -239,7 +275,7 @@ const enqueue=g=>{if(!g||g.q===1)return;if(ART[g.k]&&!g._retry)return;g.q=1;g._f
 async function pump(){while(run<4&&Q.length){run++;const g=Q.shift();job(g).finally(()=>{run--;pump()})}}
 
 async function job(g){
- const active=PROVIDERS.filter(([name])=>!(name==='sgdb'&&!SGDB_KEY)&&!(name==='rawg'&&!RAWG_KEY));
+ const active=PROVIDERS.filter(([name])=>!(name==='sgdb'&&!SGDB_KEY)&&!(name==='rawg'&&!RAWG_KEY)&&!(name==='gb'&&!GB_KEY));
  const settled=await Promise.allSettled(active.map(([,fn])=>fn(g)));
  let picked=null,meta={};
  active.forEach(([name],idx)=>{
@@ -356,11 +392,14 @@ function cfg(){lastFocus=document.activeElement;const d=$('#cfg');
  <div class="prov"><span><span class="dot" data-dot="steam"></span>Steam store search — free, always on</span></div>
  <div class="prov"><span><span class="dot" data-dot="sgdb"></span>SteamGridDB — best box art, needs key</span></div>
  <div class="prov"><span><span class="dot" data-dot="rawg"></span>RAWG — Metacritic &amp; ratings, needs key</span></div>
- <p style="font-size:12px;opacity:.75;margin:8px 0">Providers run in order; the first usable image wins, metadata merges from all of them. Keys are stored only in this browser.</p>
+ <div class="prov"><span><span class="dot" data-dot="gb"></span>Giant Bomb — extra art backup, needs key</span></div>
+ <p style="font-size:12px;opacity:.75;margin:8px 0">You don't need any of the keys below — Wikipedia and Steam already cover most games for free. Add a key only if a lot of cards still say "NO ART ON FILE" after they've had a few seconds to search. Providers run in order; the first usable image wins, and the little dots above turn green once each one has found something. Keys never leave this browser.</p>
  <label class="sr" for="sgdbkey">SteamGridDB API key</label>
- <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><input id="sgdbkey" type="password" placeholder="SteamGridDB key (optional)" value="${esc(SGDB_KEY)}" style="flex:1;background:none;border:0;border-bottom:2px dotted var(--ink);padding:6px 0;outline:0;font-size:15px"><button type="button" class="pwtoggle" data-for="sgdbkey">[SHOW]</button></div>
+ <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><input id="sgdbkey" type="password" placeholder="SteamGridDB key (optional) — free at steamgriddb.com/profile/preferences/api" value="${esc(SGDB_KEY)}" style="flex:1;background:none;border:0;border-bottom:2px dotted var(--ink);padding:6px 0;outline:0;font-size:15px"><button type="button" class="pwtoggle" data-for="sgdbkey">[SHOW]</button></div>
  <label class="sr" for="key">RAWG API key</label>
- <div style="display:flex;align-items:center;gap:8px"><input id="key" type="password" placeholder="RAWG key (optional) — get one free at rawg.io/apidocs" value="${esc(RAWG_KEY)}" style="flex:1;background:none;border:0;border-bottom:2px dotted var(--ink);padding:6px 0;outline:0;font-size:15px"><button type="button" class="pwtoggle" data-for="key">[SHOW]</button></div>
+ <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><input id="key" type="password" placeholder="RAWG key (optional) — free at rawg.io/apidocs" value="${esc(RAWG_KEY)}" style="flex:1;background:none;border:0;border-bottom:2px dotted var(--ink);padding:6px 0;outline:0;font-size:15px"><button type="button" class="pwtoggle" data-for="key">[SHOW]</button></div>
+ <label class="sr" for="gbkey">Giant Bomb API key</label>
+ <div style="display:flex;align-items:center;gap:8px"><input id="gbkey" type="password" placeholder="Giant Bomb key (optional) — free at giantbomb.com/api" value="${esc(GB_KEY)}" style="flex:1;background:none;border:0;border-bottom:2px dotted var(--ink);padding:6px 0;outline:0;font-size:15px"><button type="button" class="pwtoggle" data-for="gbkey">[SHOW]</button></div>
  <div class="ch" style="margin-top:10px"><button type="button" id="ksave">[SAVE KEYS &amp; RE-FETCH]</button></div></div>
  <div class="desk-sec"><h4>AI (SMART PICK · ASK SEARCH · AUTO-TAG)</h4>
  <p style="font-size:12px;opacity:.75;margin:0 0 8px">Works with any OpenAI-compatible endpoint. Default below is <a style="color:var(--rd)" target="_blank" rel="noopener" href="https://openrouter.ai/keys">OpenRouter</a> with a free model (no card, ~200 req/day). Also works with <a style="color:var(--rd)" target="_blank" rel="noopener" href="https://aistudio.google.com/apikey">Gemini</a> (OpenAI-compat endpoint), <a style="color:var(--rd)" target="_blank" rel="noopener" href="https://console.groq.com/keys">Groq</a>, or a local Ollama server. Key is stored only in this browser and sent only to the endpoint URL below.</p>
@@ -540,8 +579,8 @@ $('#cfg').addEventListener('input',e=>{if(e.target.id!=='aiurl')return;
  else{$('#aimodel').hidden=true;$('#aimodelcustom').hidden=false;$('#custommodel').hidden=true;$('#refreshmodels').hidden=true}});
 $('#cfg').addEventListener('click',e=>{const i=e.target.id;
  if(e.target.classList.contains('pwtoggle')){const inp=$('#'+e.target.dataset.for);const show=inp.type==='password';inp.type=show?'text':'password';e.target.textContent=show?'[HIDE]':'[SHOW]';return}
- if(i==='ksave'){RAWG_KEY=$('#key').value.trim();SGDB_KEY=$('#sgdbkey').value.trim();SV('ba_key',RAWG_KEY);SV('ba_sgdb',SGDB_KEY);
-  PROV_STATE.sgdb=SGDB_KEY?'off':'disabled';PROV_STATE.rawg=RAWG_KEY?'off':'disabled';
+ if(i==='ksave'){RAWG_KEY=$('#key').value.trim();SGDB_KEY=$('#sgdbkey').value.trim();GB_KEY=$('#gbkey').value.trim();SV('ba_key',RAWG_KEY);SV('ba_sgdb',SGDB_KEY);SV('ba_gb',GB_KEY);
+  PROV_STATE.sgdb=SGDB_KEY?'off':'disabled';PROV_STATE.rawg=RAWG_KEY?'off':'disabled';PROV_STATE.gb=GB_KEY?'off':'disabled';
   G.forEach(g=>{g.q=0;g._retry=true});Object.keys(ART).forEach(k=>delete ART[k]);document.querySelectorAll('.c[data-i]').forEach(c=>io.observe(c));
   toast('Keys saved. Re-fetching art…');updateProvDots()}
  else if(i==='snd'){SND=!SND;SV('ba_snd',SND);e.target.textContent=`[SOUND: ${SND?'ON':'OFF'}]`;thunk()}
@@ -617,4 +656,13 @@ function showParseWarnings(warnings){const old=document.getElementById('pwarn');
  b.querySelector('#pwDismiss').onclick=()=>b.remove();
  $('#out').before(b)}
 fetch('games.md',{cache:'no-cache'}).then(r=>{if(!r.ok)throw 0;return r.text()}).then(load).catch(()=>{$('#out').innerHTML='<div class="empty">THE ARCHIVE (games.md) WON’T OPEN.<br><br><button type="button" id="pickFile2">[CHOOSE games.md]</button> OR DROP IT ON THE DESK.</div>';$('#pickFile2')?.addEventListener('click',()=>$('#file').click())});
+/* First-time guidance for non-technical users: posters take a few seconds per card to search
+   (rate-limited to 4 in flight, see pump()), AI features are opt-in and need a key, and the
+   initials tile is a normal "nothing found" result, not an error — spelling this out up front
+   heads off the most common support questions before they happen. */
+if(!LS('ba_seen_intro',false)){
+ const b=document.createElement('div');b.id='introtip';b.style.cssText='background:var(--hl);color:var(--ink);padding:10px 14px;margin:10px 0;font-size:13px;rotate:-.3deg;display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap';
+ b.innerHTML=`<span>First time here? Covers load in over a few seconds as each one is looked up — a plain initials tile just means nothing was found, click ↻ to retry. Smart Pick, Ask-search and Auto-Tag need a free AI key in <b>[DESK]</b> first.</span><button type="button" id="introok" style="border:2px solid var(--ink);padding:2px 10px;white-space:nowrap">[GOT IT]</button>`;
+ b.querySelector('#introok').onclick=()=>{SV('ba_seen_intro',true);b.remove()};
+ document.querySelector('.ctl').after(b)}
 </script></body></html>
